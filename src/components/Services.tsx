@@ -25,12 +25,7 @@ const services = [
 export default function Services() {
   const sectionRef = useRef<HTMLElement>(null);
   const [cardRotations, setCardRotations] = useState<number[]>(Array(services.length).fill(0));
-  const [loadedIcons, setLoadedIcons] = useState<Set<string>>(new Set());
   const [isVisible, setIsVisible] = useState(false);
-
-  const handleIconLoad = (title: string) => {
-    setLoadedIcons(prev => new Set(prev).add(title));
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -143,7 +138,6 @@ export default function Services() {
                         layout="fill"
                         objectFit="contain"
                         className="mx-auto transition-transform duration-300 hover:scale-110 dark:brightness-90"
-                        onLoadingComplete={() => handleIconLoad(service.title)}
                       />
                     </div>
                     <h3 className="text-xl sm:text-2xl font-semibold mb-2 text-gray-800 dark:text-dark-primary">

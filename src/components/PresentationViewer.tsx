@@ -17,54 +17,28 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
   onClose 
 }) => {
   const [currentSlide, setCurrentSlide] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
   const [loadedImages, setLoadedImages] = useState<number[]>([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [viewerDimensions, setViewerDimensions] = useState({ width: 0, height: 0 });
-  const [isClosing, setIsClosing] = useState(false);
-  const [slideTransition, setSlideTransition] = useState<'next' | 'prev' | null>(null);
-  const [failedSlides, setFailedSlides] = useState<Set<number>>(new Set());
 
+  // Add handleClose function
   const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(onClose, 300); // Match duration with CSS transition
+    onClose();
   };
 
-  const changeSlide = (direction: 'next' | 'prev') => {
-    setSlideTransition(direction);
-    setCurrentSlide(prev => {
-      if (direction === 'next') return Math.min(prev + 1, totalSlides);
-      return Math.max(prev - 1, 1);
-    });
-    setTimeout(() => setSlideTransition(null), 300);
-  };
+  const changeSlide = useCallback((direction: 'next' | 'prev') => {
+    if (direction === 'next' && currentSlide < totalSlides) {
+      setCurrentSlide(prev => prev + 1);
+    } else if (direction === 'prev' && currentSlide > 1) {
+      setCurrentSlide(prev => prev - 1);
+    }
+  }, [currentSlide, totalSlides]);
 
   // Handle window resize and orientation
   useEffect(() => {
     const updateDimensions = () => {
       const isPortrait = window.matchMedia("(orientation: portrait)").matches;
       setOrientation(isPortrait ? 'portrait' : 'landscape');
-
-      // Calculate viewer dimensions based on screen size and orientation
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const aspectRatio = 16/9; // Assuming slides are 16:9
-
-      if (isPortrait) {
-        const width = screenWidth * 0.9;
-        setViewerDimensions({
-          width,
-          height: width / aspectRatio
-        });
-      } else {
-        const height = screenHeight * 0.8;
-        setViewerDimensions({
-          width: height * aspectRatio,
-          height
-        });
-      }
     };
 
     window.addEventListener('resize', updateDimensions);
@@ -73,38 +47,13 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Handle touch events for swipe navigation
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.touches[0].clientX);
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (touchStart === null) return;
-
-    const touchEnd = e.touches[0].clientX;
-    const diff = touchStart - touchEnd;
-
-    if (Math.abs(diff) > 50) { // Minimum swipe distance
-      if (diff > 0 && currentSlide < totalSlides) {
-        setCurrentSlide(prev => prev + 1);
-      } else if (diff < 0 && currentSlide > 1) {
-        setCurrentSlide(prev => prev - 1);
-      }
-      setTouchStart(null);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setTouchStart(null);
-  };
-
   // Handle keyboard navigation and fullscreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
-        setCurrentSlide(prev => Math.min(prev + 1, totalSlides));
+        changeSlide('next');
       } else if (e.key === 'ArrowLeft') {
-        setCurrentSlide(prev => Math.max(prev - 1, 1));
+        changeSlide('prev');
       } else if (e.key === 'Escape') {
         if (isFullscreen) {
           document.exitFullscreen();
@@ -118,12 +67,12 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [totalSlides, onClose, isFullscreen]);
+  }, [totalSlides, onClose, isFullscreen, changeSlide]);
 
   // Handle image preloading
   useEffect(() => {
     const preloadImages = async () => {
-      if (!slides || !totalSlides) return; // Add guard clause
+      if (!slides || !totalSlides) return;
       
       const imagesToLoad = [currentSlide, currentSlide + 1, currentSlide + 2].filter(slide => slide <= totalSlides);
       
@@ -140,11 +89,10 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
           });
         }
       }
-      setIsLoading(false);
     };
 
     preloadImages();
-  }, [currentSlide, totalSlides, slides]); // Remove loadedImages from dependencies
+  }, [currentSlide, totalSlides, slides, loadedImages]);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -156,16 +104,11 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
     }
   };
 
-  // Also, let's add error handling for image loading
-  const handleImageError = (slideNumber: number) => {
-    console.error(`Failed to load slide ${slideNumber} for ${projectName}`);
-    setFailedSlides(prev => new Set(prev).add(slideNumber));
-  };
-
   return (
     <div 
       className="fixed inset-0 bg-white dark:bg-dark-bg flex items-center justify-center z-50 transition-all duration-300"
       onClick={handleClose}
+      aria-label={`Presentation viewer for ${projectName}`}
     >
       <div 
         className="relative w-full h-full flex flex-col justify-center items-center"
@@ -184,7 +127,6 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({
                 style={{ objectFit: 'contain' }}
                 priority
                 className="transition-opacity duration-300 dark:brightness-90"
-                onLoad={() => setIsLoading(false)}
               />
 
               {/* Navigation buttons - positioned absolutely within image container */}

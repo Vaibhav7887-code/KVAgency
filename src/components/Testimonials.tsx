@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import LoadingSkeleton from './LoadingSkeleton';
 import { placeholderAvatars } from '@/utils/placeholderImages';
 
 const testimonials = [
@@ -45,7 +44,6 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -63,10 +61,6 @@ export default function Testimonials() {
 
     return () => observer.disconnect();
   }, []);
-
-  const handleImageLoad = (clientName: string) => {
-    setLoadedImages(prev => new Set(prev).add(clientName));
-  };
 
   return (
     <section id="testimonials" className="py-20 bg-gray-100">
@@ -89,9 +83,11 @@ export default function Testimonials() {
               <div className="flex flex-col items-center">
                 {/* Avatar image */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 relative mb-4 rounded-full overflow-hidden group-hover:scale-110 transition-transform duration-300">
-                  <img 
+                  <Image 
                     src={placeholderAvatars[testimonial.avatar as keyof typeof placeholderAvatars]}
                     alt={testimonial.client}
+                    width={96}
+                    height={96}
                     className="w-full h-full object-cover rounded-full"
                   />
                 </div>

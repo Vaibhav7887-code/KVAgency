@@ -39,7 +39,7 @@ export default function Footer() {
                 height={15} 
                 className="cursor-pointer"
                 onLoadingComplete={() => setIsLogoLoaded(true)}
-                onError={(e) => {
+                onError={() => {
                   console.error('Logo failed to load in footer');
                   // Show a fallback or retry loading
                 }}

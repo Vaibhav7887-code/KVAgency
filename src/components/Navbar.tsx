@@ -56,7 +56,7 @@ export default function Navbar() {
                   height={15} 
                   className="cursor-pointer dark:brightness-110"
                   onLoadingComplete={() => setIsLogoLoaded(true)}
-                  onError={(e) => {
+                  onError={() => {
                     console.error('Logo failed to load');
                     // Show a fallback or retry loading
                   }}

@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import LoadingSkeleton from './LoadingSkeleton';
 import { placeholderIcons } from '@/utils/placeholderIcons';
 
 interface Industry {
