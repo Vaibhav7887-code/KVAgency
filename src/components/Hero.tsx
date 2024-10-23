@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
+import Navbar from './Navbar';
 
 const logos = [
   '/logos/Algomage-Logo.png',
@@ -16,67 +17,61 @@ const logos = [
 ];
 
 export default function Hero() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (!scrollElement) return;
-
-    const resetScroll = () => {
-      if (scrollElement.scrollLeft >= scrollElement.scrollWidth / 2) {
-        scrollElement.scrollLeft = 0;
-      } else if (scrollElement.scrollLeft <= 0) {
-        scrollElement.scrollLeft = scrollElement.scrollWidth / 2;
-      }
-    };
-
-    const animateScroll = () => {
-      scrollElement.scrollLeft += 1;
-      resetScroll();
-      requestAnimationFrame(animateScroll);
-    };
-
-    requestAnimationFrame(animateScroll);
-
-    return () => cancelAnimationFrame(requestAnimationFrame(animateScroll));
-  }, []);
-
   return (
-    <section className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gray-900">
-      <div className="relative z-10 text-center text-white p-4 max-w-full">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 px-4">
-          Welcome to your agency, Khubusu :D
-        </h1>
+    <>
+      <Navbar />
+      <section className="relative flex items-center min-h-screen bg-white -mt-[88px]">
+        <div className="relative z-10 text-left text-gray-800 container mx-auto pt-[88px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-4">
+            {/* Left side - Text content */}
+            <div className="max-w-3xl text-center md:text-left">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 leading-tight">
+                Brand.<span className="text-orange-600">Design</span>.<span className="text-orange-600">Product</span>.<br />
+                In-House Development<br />
+                Pitch Deck & More
+              </h1>
 
-        <button className="glassmorphism px-6 py-3 sm:px-8 sm:py-4 text-lg sm:text-xl font-semibold hover:brightness-125 transition transform hover:scale-105">
-          Get Started
-        </button>
+              <button className="px-6 py-3 sm:px-8 sm:py-4 text-lg sm:text-xl font-semibold border-2 border-orange-600 text-orange-600 rounded-full hover:bg-orange-600 hover:text-white transition-all duration-300 mx-auto md:mx-0">
+                Get Started
+              </button>
+            </div>
 
-        <div className="mt-12">
-          <div className="w-64 h-64 bg-gray-700 mx-auto flex items-center justify-center">
-            3D Animation Placeholder
+            {/* Right side - 3D Animation */}
+            <div className="flex justify-center md:justify-end mt-8 md:mt-0">
+              <div className="w-full max-w-[300px] md:w-96 md:h-96 relative aspect-square">
+                <Image 
+                  src="/Hero/3DHero.gif"
+                  alt="3D Hero Animation"
+                  layout="fill"
+                  objectFit="contain"
+                  className="rounded-lg"
+                  priority
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-12 overflow-hidden">
-          <div ref={scrollRef} className="flex overflow-x-hidden" style={{ width: '100%' }}>
-            <div className="flex logo-scroll">
-              {[...logos, ...logos, ...logos].map((logo, index) => (
-                <div key={index} className="flex-shrink-0 w-24 sm:w-32 h-12 sm:h-16 mx-2">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={logo}
-                      alt={`Client ${index % logos.length + 1}`}
-                      layout="fill"
-                      objectFit="contain"
-                    />
+          {/* Logo scroll at the bottom */}
+          <div className="mt-16 overflow-hidden px-4">
+            <div className="logo-scroll-container">
+              <div className="logo-scroll">
+                {[...logos, ...logos].map((logo, index) => (
+                  <div key={index} className="inline-block w-20 sm:w-24 md:w-32 h-10 sm:h-12 md:h-16 mx-2">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={logo}
+                        alt={`Client ${index % logos.length + 1}`}
+                        layout="fill"
+                        objectFit="contain"
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

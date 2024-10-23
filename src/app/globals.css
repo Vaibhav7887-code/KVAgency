@@ -25,8 +25,9 @@
 }
 
 .logo-scroll {
-  display: flex;
-  width: 300%; /* Triple the width to ensure seamless looping */
+  display: inline-flex;
+  white-space: nowrap;
+  animation: scroll 30s linear infinite;
 }
 
 .logo-scroll:hover {
@@ -40,25 +41,17 @@
 }
 
 body {
-  @apply bg-gray-900 text-white;
+  @apply bg-white text-gray-800; /* Changed from bg-gray-900 text-white */
 }
 
 /* Glassmorphism styles */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
+.glass, .glassmorphism {
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
-}
-
-/* New Glassmorphism class */
-.glassmorphism {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Scroll Animation */
@@ -107,4 +100,22 @@ body {
 .logo-container {
   display: inline-flex;
   white-space: nowrap;
+}
+
+/* Add to your existing styles */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Optional: Add this if you want to prevent parallax on mobile devices */
+@media (max-width: 768px) {
+  .parallax-disabled {
+    transform: none !important;
+    transition: none !important;
+  }
 }

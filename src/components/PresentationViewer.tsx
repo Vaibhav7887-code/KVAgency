@@ -60,18 +60,18 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ projectName, to
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-        <div className="text-white text-2xl">Loading presentation...</div>
+      <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
+        <div className="text-gray-800 text-2xl">Loading presentation...</div>
       </div>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" onClick={onClose}>
+    <div className="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50" onClick={onClose}>
       <div className="relative w-full max-w-6xl" onClick={e => e.stopPropagation()}>
         <button 
           onClick={onClose}
-          className="absolute -top-12 right-0 text-white text-3xl p-2"
+          className="absolute -top-12 right-0 text-gray-800 text-3xl p-2 hover:text-gray-600"
         >
           &times;
         </button>
@@ -83,24 +83,25 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ projectName, to
             height={1125}
             layout="responsive"
           />
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-4 flex items-center justify-between">
-            <div className="text-white">
+          <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 p-4 flex items-center justify-between">
+            <div className="text-gray-800">
               {currentSlide} / {totalSlides}
             </div>
             <div className="w-2/3 bg-gray-200 rounded-full h-2.5 ml-4">
               <div 
-                className="bg-blue-600 h-2.5 rounded-full" 
+                className="bg-blue-500 h-2.5 rounded-full" 
                 style={{ width: `${(currentSlide / totalSlides) * 100}%` }}
               ></div>
             </div>
           </div>
         </div>
+        {/* Navigation buttons with lighter theme */}
         <button 
           onClick={(e) => {
             e.stopPropagation();
             setCurrentSlide(prev => Math.max(prev - 1, 1));
           }}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl bg-black bg-opacity-50 p-2 rounded-full"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-800 text-4xl bg-white bg-opacity-90 p-2 rounded-full shadow-lg hover:bg-gray-100"
           disabled={currentSlide === 1}
         >
           &#8249;
@@ -110,7 +111,7 @@ const PresentationViewer: React.FC<PresentationViewerProps> = ({ projectName, to
             e.stopPropagation();
             setCurrentSlide(prev => Math.min(prev + 1, totalSlides));
           }}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl bg-black bg-opacity-50 p-2 rounded-full"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-800 text-4xl bg-white bg-opacity-90 p-2 rounded-full shadow-lg hover:bg-gray-100"
           disabled={currentSlide === totalSlides}
         >
           &#8250;
