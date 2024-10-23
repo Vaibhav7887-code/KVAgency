@@ -50,7 +50,7 @@ export default function CTA() {
             </div>
 
             <p className="text-center text-sm text-gray-500 mt-4">
-              We'll get back to you within 24 hours
+              We&apos;ll get back to you within 24 hours
             </p>
           </form>
         </div>

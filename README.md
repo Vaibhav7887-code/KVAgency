@@ -34,3 +34,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Please remember that we are using Next.js 13 with the App Router. When working with image preloading or any client-side image manipulation, use the global window.Image constructor instead of just Image to avoid conflicts with the Next.js Image component. Always use 'use client' at the top of components that use client-side functionality."
+This prompt reminds me to:
+Use the correct Next.js version and features.
+Distinguish between the Next.js Image component and the global Image constructor.
+Use 'use client' directive when necessary.
