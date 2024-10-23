@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import LoadingSkeleton from './LoadingSkeleton';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLogoLoaded, setIsLogoLoaded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,52 +33,52 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[9999]" style={{ position: 'sticky' }}>
+    <header className="sticky top-0 left-0 right-0 z-[9999]">
       <div className="px-4 py-4">
         <nav className={`mx-auto max-w-7xl transition-all duration-300 rounded-full ${
-          isScrolled ? 'glassmorphism shadow-lg' : 'bg-white bg-opacity-50 backdrop-blur-sm'
+          isScrolled 
+            ? 'glassmorphism shadow-lg dark:bg-dark-surface/70' 
+            : 'bg-white/50 dark:bg-dark-surface/50 backdrop-blur-sm'
         }`}>
           <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-            {/* Logo */}
+            {/* Logo with loading skeleton */}
             <div className="flex items-center">
-              <Image 
-                src="/logo.png" 
-                alt="Logo" 
-                width={120} 
-                height={40} 
-                className="cursor-pointer"
-              />
+              {!isLogoLoaded && (
+                <div className="w-[40px] h-[15px]">
+                  <LoadingSkeleton type="image" className="rounded" />
+                </div>
+              )}
+              <div className={!isLogoLoaded ? 'hidden' : ''}>
+                <Image 
+                  src="/Logo.png"  // Ensure this matches exactly with the file in public folder
+                  alt="Logo" 
+                  width={40} 
+                  height={15} 
+                  className="cursor-pointer dark:brightness-110"
+                  onLoadingComplete={() => setIsLogoLoaded(true)}
+                  onError={(e) => {
+                    console.error('Logo failed to load');
+                    // Show a fallback or retry loading
+                  }}
+                  priority  // Add priority to ensure immediate loading
+                />
+              </div>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              <button 
-                onClick={() => scrollToSection('services')}
-                className="text-gray-800 hover:text-orange-600 transition-colors"
-              >
-                Services
-              </button>
-              <button 
-                onClick={() => scrollToSection('projects')}
-                className="text-gray-800 hover:text-orange-600 transition-colors"
-              >
-                Projects
-              </button>
-              <button 
-                onClick={() => scrollToSection('industries')}
-                className="text-gray-800 hover:text-orange-600 transition-colors"
-              >
-                Industries
-              </button>
-              <button 
-                onClick={() => scrollToSection('testimonials')}
-                className="text-gray-800 hover:text-orange-600 transition-colors"
-              >
-                Testimonials
-              </button>
+              {['services', 'projects', 'industries', 'testimonials'].map((section) => (
+                <button 
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className="text-gray-800 dark:text-dark-primary hover:text-orange-600 dark:hover:text-orange-500 transition-colors capitalize"
+                >
+                  {section}
+                </button>
+              ))}
               <button 
                 onClick={() => scrollToSection('contact')}
-                className="bg-orange-600 text-white px-6 py-2 rounded-full hover:scale-105 hover:shadow-lg transition-all duration-300 ease-out transform"
+                className="bg-orange-600 dark:bg-orange-500 text-white px-6 py-2 rounded-full hover:scale-105 hover:shadow-lg dark:hover:shadow-dark-lg transition-all duration-300 ease-out transform"
               >
                 Contact Us
               </button>
@@ -86,13 +88,14 @@ export default function Navbar() {
             <div className="md:hidden flex items-center space-x-4">
               <button 
                 onClick={() => scrollToSection('contact')}
-                className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm"
+                className="bg-orange-600 dark:bg-orange-500 text-white px-4 py-2 rounded-full text-sm hover:scale-105 hover:shadow-lg dark:hover:shadow-dark-lg transition-all duration-300"
               >
                 Contact
               </button>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="text-gray-800 focus:outline-none"
+                className="text-gray-800 dark:text-dark-primary focus:outline-none hover:text-orange-600 dark:hover:text-orange-500 transition-colors p-2"
+                aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
               >
                 <svg
                   className="w-6 h-6"
@@ -122,30 +125,15 @@ export default function Navbar() {
             }`}
           >
             <div className="flex flex-col items-center space-y-4 px-6">
-              <button 
-                onClick={() => scrollToSection('services')}
-                className="text-gray-800 hover:text-orange-600 transition-colors w-full text-center py-2"
-              >
-                Services
-              </button>
-              <button 
-                onClick={() => scrollToSection('projects')}
-                className="text-gray-800 hover:text-orange-600 transition-colors w-full text-center py-2"
-              >
-                Projects
-              </button>
-              <button 
-                onClick={() => scrollToSection('industries')}
-                className="text-gray-800 hover:text-orange-600 transition-colors w-full text-center py-2"
-              >
-                Industries
-              </button>
-              <button 
-                onClick={() => scrollToSection('testimonials')}
-                className="text-gray-800 hover:text-orange-600 transition-colors w-full text-center py-2"
-              >
-                Testimonials
-              </button>
+              {['services', 'projects', 'industries', 'testimonials'].map((section) => (
+                <button 
+                  key={section}
+                  onClick={() => scrollToSection(section)}
+                  className="text-gray-800 dark:text-dark-primary hover:text-orange-600 dark:hover:text-orange-500 transition-colors w-full text-center py-2 capitalize"
+                >
+                  {section}
+                </button>
+              ))}
             </div>
           </div>
         </nav>

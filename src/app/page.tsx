@@ -7,6 +7,8 @@ import CTA from '@/components/CTA';
 import Footer from '@/components/Footer';
 import ParallaxSection from '@/components/ParallaxSection';
 import { Metadata } from 'next';
+import BackToTop from '@/components/BackToTop';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export const metadata: Metadata = {
   title: 'My Agency',
@@ -41,6 +43,8 @@ export default function Home() {
       </ParallaxSection>
       
       <Footer />
+      <BackToTop />
+      <ThemeToggle />
     </main>
   );
 }

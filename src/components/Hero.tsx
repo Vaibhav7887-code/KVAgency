@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Navbar from './Navbar';
+import LoadingSkeleton from './LoadingSkeleton';
 
 const logos = [
   '/logos/Algomage-Logo.png',
@@ -17,52 +18,76 @@ const logos = [
 ];
 
 export default function Hero() {
+  const [isHeroLoaded, setIsHeroLoaded] = useState(false);
+  const [loadedLogos, setLoadedLogos] = useState<Set<string>>(new Set());
+
+  const handleHeroLoad = () => {
+    setIsHeroLoaded(true);
+  };
+
+  const handleLogoLoad = (logo: string) => {
+    setLoadedLogos(prev => new Set(prev).add(logo));
+  };
+
   return (
     <>
       <Navbar />
-      <section className="relative flex items-center min-h-screen bg-white -mt-[88px]">
-        <div className="relative z-10 text-left text-gray-800 container mx-auto pt-[88px]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-4">
+      <section className="relative flex items-center min-h-[calc(100vh-88px)] bg-white dark:bg-dark-bg">
+        <div className="relative z-10 text-gray-800 dark:text-dark-primary container mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center px-4 md:px-6">
             {/* Left side - Text content */}
-            <div className="max-w-3xl text-center md:text-left">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-8 leading-tight">
-                Brand.<span className="text-orange-600">Design</span>.<span className="text-orange-600">Product</span>.<br />
-                In-House Development<br />
-                Pitch Deck & More
+            <div className="max-w-2xl text-center md:text-left animate-fade-in">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 md:mb-8 leading-tight">
+                <span className="animate-slide-in inline-block">Brand.</span>
+                <span className="text-orange-600 animate-slide-in inline-block delay-100">Design.</span>
+                <span className="text-orange-600 animate-slide-in inline-block delay-200">Product.</span><br />
+                <span className="animate-slide-in inline-block delay-300 dark:text-dark-primary">In-House Development</span><br />
+                <span className="animate-slide-in inline-block delay-300 dark:text-dark-primary">Pitch Deck & More</span>
               </h1>
 
-              <button className="px-6 py-3 sm:px-8 sm:py-4 text-lg sm:text-xl font-semibold border-2 border-orange-600 text-orange-600 rounded-full hover:bg-orange-600 hover:text-white transition-all duration-300 mx-auto md:mx-0">
+              <button className="px-5 py-2.5 sm:px-6 sm:py-3 text-base sm:text-lg font-semibold border-2 border-orange-600 text-orange-600 dark:text-orange-500 dark:border-orange-500 rounded-full hover:bg-orange-600 hover:text-white dark:hover:bg-orange-500 transition-all duration-300 mx-auto md:mx-0 animate-fade-in delay-300 hover-lift">
                 Get Started
               </button>
             </div>
 
             {/* Right side - 3D Animation */}
-            <div className="flex justify-center md:justify-end mt-8 md:mt-0">
-              <div className="w-full max-w-[300px] md:w-96 md:h-96 relative aspect-square">
+            <div className="flex justify-center md:justify-end mt-6 md:mt-0 animate-scale-in delay-200">
+              {!isHeroLoaded && (
+                <div className="w-full max-w-[250px] sm:max-w-[300px] md:max-w-[400px] aspect-square">
+                  <LoadingSkeleton type="image" className="rounded-lg loading-shimmer" />
+                </div>
+              )}
+              <div className={`w-full max-w-[250px] sm:max-w-[300px] md:max-w-[400px] relative aspect-square ${!isHeroLoaded ? 'hidden' : ''}`}>
                 <Image 
                   src="/Hero/3DHero.gif"
                   alt="3D Hero Animation"
                   layout="fill"
                   objectFit="contain"
-                  className="rounded-lg"
+                  className="rounded-lg dark:brightness-90"
                   priority
+                  onLoadingComplete={handleHeroLoad}
                 />
               </div>
             </div>
           </div>
 
           {/* Logo scroll at the bottom */}
-          <div className="mt-16 overflow-hidden px-4">
+          <div className="mt-12 md:mt-16 overflow-hidden px-4 animate-fade-in delay-300">
             <div className="logo-scroll-container">
               <div className="logo-scroll">
                 {[...logos, ...logos].map((logo, index) => (
-                  <div key={index} className="inline-block w-20 sm:w-24 md:w-32 h-10 sm:h-12 md:h-16 mx-2">
-                    <div className="relative w-full h-full">
+                  <div key={index} className="inline-block w-16 sm:w-20 md:w-24 h-8 sm:h-10 md:h-12 mx-2">
+                    {!loadedLogos.has(logo) ? (
+                      <LoadingSkeleton type="image" className="w-full h-full loading-shimmer" />
+                    ) : null}
+                    <div className={`relative w-full h-full ${!loadedLogos.has(logo) ? 'hidden' : ''}`}>
                       <Image
                         src={logo}
                         alt={`Client ${index % logos.length + 1}`}
                         layout="fill"
                         objectFit="contain"
+                        className="dark:brightness-90 dark:contrast-125"
+                        onLoadingComplete={() => handleLogoLoad(logo)}
                       />
                     </div>
                   </div>
