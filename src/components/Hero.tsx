@@ -5,16 +5,17 @@ import Image from 'next/image';
 import Navbar from './Navbar';
 import LoadingSkeleton from './LoadingSkeleton';
 
+// Update paths to match your public directory structure
 const logos = [
-  '/logos/Algomage-Logo.png',
-  '/logos/Axis-logo.png',
-  '/logos/Bajaj-logo.png',
-  '/logos/HDFC-logo.png',
-  '/logos/IDFC-logo.png',
-  '/logos/Nedbank-logo.png',
-  '/logos/PDFTRON-logo.png',
-  '/logos/Tata-logo.png',
-  '/logos/Visa-logo.png',
+  { src: '/logos/algomage-logo.png', alt: 'Algomage' },
+  { src: '/logos/axis-logo.png', alt: 'Axis' },
+  { src: '/logos/bajaj-logo.png', alt: 'Bajaj' },
+  { src: '/logos/hdfc-logo.png', alt: 'HDFC' },
+  { src: '/logos/idfc-logo.png', alt: 'IDFC' },
+  { src: '/logos/nedbank-logo.png', alt: 'Nedbank' },
+  { src: '/logos/pdftron-logo.png', alt: 'PDFTron' },
+  { src: '/logos/tata-logo.png', alt: 'Tata' },
+  { src: '/logos/visa-logo.png', alt: 'Visa' },
 ];
 
 export default function Hero() {
@@ -25,8 +26,8 @@ export default function Hero() {
     setIsHeroLoaded(true);
   };
 
-  const handleLogoLoad = (logo: string) => {
-    setLoadedLogos(prev => new Set(prev).add(logo));
+  const handleLogoLoad = (logoSrc: string) => {
+    setLoadedLogos(prev => new Set(prev).add(logoSrc));
   };
 
   return (
@@ -71,23 +72,26 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Logo scroll at the bottom */}
+          {/* Updated Logo scroll section */}
           <div className="mt-12 md:mt-16 overflow-hidden px-4 animate-fade-in delay-300">
             <div className="logo-scroll-container">
               <div className="logo-scroll">
                 {[...logos, ...logos].map((logo, index) => (
-                  <div key={index} className="inline-block w-16 sm:w-20 md:w-24 h-8 sm:h-10 md:h-12 mx-2">
-                    {!loadedLogos.has(logo) ? (
+                  <div key={index} className="inline-block w-24 sm:w-32 md:w-40 mx-4 relative h-12">
+                    {!loadedLogos.has(logo.src) && (
                       <LoadingSkeleton type="image" className="w-full h-full loading-shimmer" />
-                    ) : null}
-                    <div className={`relative w-full h-full ${!loadedLogos.has(logo) ? 'hidden' : ''}`}>
+                    )}
+                    <div className={`relative w-full h-full ${!loadedLogos.has(logo.src) ? 'hidden' : ''}`}>
                       <Image
-                        src={logo}
-                        alt={`Client ${index % logos.length + 1}`}
+                        src={logo.src}
+                        alt={logo.alt}
                         layout="fill"
                         objectFit="contain"
                         className="dark:brightness-90 dark:contrast-125"
-                        onLoadingComplete={() => handleLogoLoad(logo)}
+                        onLoadingComplete={() => handleLogoLoad(logo.src)}
+                        onError={() => {
+                          console.error(`Failed to load logo: ${logo.src}`);
+                        }}
                       />
                     </div>
                   </div>
